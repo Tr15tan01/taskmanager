@@ -26,6 +26,7 @@ import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
 
 // date fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { SubTasks } from "./SubTasks";
 
 const TaskDetails = ({ task }) => {
   const { dispatch } = useTasksContext();
@@ -103,6 +104,8 @@ const TaskDetails = ({ task }) => {
               </SimpleGrid>
             </SimpleGrid>
           </Box>
+          <SubTasks />
+
           <Box>
             <Heading size="sm" textTransform="uppercase">
               Deadline

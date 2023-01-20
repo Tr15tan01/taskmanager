@@ -2,13 +2,13 @@ import { useEffect } from "react";
 import { tasksContext, useTasksContext } from "../hooks/useTasksContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import ModalComponent from "../components/Modal";
-import { Stack, HStack, VStack, Box } from "@chakra-ui/react";
+import { HStack, VStack, Box } from "@chakra-ui/react";
 
 // components
 import TaskDetails from "../components/TaskDetails";
 // import WorkoutForm from "../components/WorkoutForm";
 
-import { Button, Container } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 
 const Home = () => {
   const { tasks, dispatch } = useTasksContext();
