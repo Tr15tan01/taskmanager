@@ -104,7 +104,6 @@ const TaskDetails = ({ task }) => {
               </SimpleGrid>
             </SimpleGrid>
           </Box>
-          <SubTasks />
 
           <Box>
             <Heading size="sm" textTransform="uppercase">
