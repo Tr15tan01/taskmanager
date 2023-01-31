@@ -5,6 +5,7 @@ const {
   getTask,
   deleteTask,
   updateTask,
+  updateSubTask,
 } = require("../controllers/taskController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -25,7 +26,10 @@ router.post("/", createTask);
 // DELETE a workout
 router.delete("/:id", deleteTask);
 
-// UPDATE a workout
+// UPDATE a task
 router.patch("/:id", updateTask);
+
+//update subtask
+router.patch("/:id/subtask/:id", updateSubTask);
 
 module.exports = router;

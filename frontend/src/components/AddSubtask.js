@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useTasksContext } from "../hooks/useTasksContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-// import { useCustomToast } from "../hooks/useToast";
-import format from "date-fns/format";
+import { AddIcon } from "@chakra-ui/icons";
 
 import {
   FormControl,
@@ -19,23 +18,39 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
+  Box,
+  Checkbox,
   Center,
 } from "@chakra-ui/react";
 
-export default function ModalComponent() {
+export default function AddSubtask({ task }) {
+  const { dispatch } = useTasksContext();
+  const fetchTasks = async () => {
+    const response = await fetch("/api/tasks", {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    const json = await response.json();
+
+    if (response.ok) {
+      dispatch({ type: "SET_TASKS", payload: json });
+    }
+  };
+
+  // useEffect(() => {
+  //   if (user) {
+  //     fetchTasks();
+  //   }
+  // }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  // const initialRef = React.useRef(null);
+  const inputRef = React.useRef(null);
   // const finalRef = React.useRef(null);
-  const { dispatch } = useTasksContext();
   const { user } = useAuthContext();
 
-  const [title, setTitle] = useState("");
+  const [subtaskTitle, setSubtaskTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  // const [load, setLoad] = useState("");
-  // const [reps, setReps] = useState("");
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
 
@@ -47,16 +62,17 @@ export default function ModalComponent() {
       return;
     }
 
-    const task = { title, description, deadline };
+    const subTask = { subtaskTitle };
 
-    const response = await fetch("/api/tasks", {
-      method: "POST",
-      body: JSON.stringify(task),
+    const response = await fetch("/api/tasks/" + task._id, {
+      method: "PATCH",
+      body: JSON.stringify(subTask),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
     });
+
     const json = await response.json();
 
     if (!response.ok) {
@@ -64,15 +80,17 @@ export default function ModalComponent() {
       setEmptyFields(json.emptyFields);
     }
     if (response.ok) {
-      setTitle("");
+      setSubtaskTitle("");
       setDescription("");
-      // setReps("");
       setError(null);
       setEmptyFields([]);
-      dispatch({ type: "CREATE_TASK", payload: json });
+      fetchTasks();
+
+      // dispatch({ type: "SET_TASKS", payload: json });
+      // dispatch({ type: "CREATE_SUBTASK", payload: json });
       toast({
-        title: "Task created.",
-        description: "A new task is createda.",
+        title: "SubTask created.",
+        description: "A new subtask is createda.",
         status: "success",
         duration: 6000,
         isClosable: true,
@@ -83,16 +101,9 @@ export default function ModalComponent() {
 
   return (
     <>
-      <Button
-        w="96%"
-        m="3"
-        size="lg"
-        variant="outline"
-        onClick={onOpen}
-        colorScheme="twitter"
-      >
-        Add New Task
-      </Button>
+      <span className="icons" onClick={onOpen}>
+        <AddIcon boxSize={6} />
+      </span>
 
       <Modal
         // initialFocusRef={initialRef}
@@ -104,35 +115,17 @@ export default function ModalComponent() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create New Task</ModalHeader>
+          <ModalHeader>Create New Subtask</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <form onSubmit={handleSubmit}>
               <FormControl>
                 <FormLabel>Title</FormLabel>
                 <Input
-                  placeholder="Task Title"
-                  onChange={(e) => setTitle(e.target.value)}
-                  value={title}
-                />
-              </FormControl>
-
-              <FormControl>
-                <FormLabel>Task Description</FormLabel>
-                <Input
-                  placeholder="Task Details"
-                  onChange={(e) => setDescription(e.target.value)}
-                  value={description}
-                />
-              </FormControl>
-
-              <FormControl>
-                <FormLabel>Task Datw</FormLabel>
-                <Input
-                  type="date"
-                  placeholder={format(new Date(), "dd-mm-yyyy")}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  value={deadline}
+                  placeholder="Subtask Title"
+                  ref={inputRef}
+                  onChange={(e) => setSubtaskTitle(e.target.value)}
+                  value={subtaskTitle}
                 />
               </FormControl>
 
@@ -154,12 +147,7 @@ export default function ModalComponent() {
             </form>
           </ModalBody>
 
-          <ModalFooter>
-            {/* <Button colorScheme="blue" mr={3} type="submit">
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button> */}
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
           {error && <div className="error">{error}</div>}
         </ModalContent>
       </Modal>

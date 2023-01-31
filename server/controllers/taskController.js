@@ -1,5 +1,6 @@
 const Task = require("../models/tasksModel");
 const mongoose = require("mongoose");
+const { findOne } = require("../models/tasksModel");
 
 // get all workouts
 const getTasks = async (req, res) => {
@@ -78,23 +79,50 @@ const deleteTask = async (req, res) => {
 // update a workout
 const updateTask = async (req, res) => {
   const { id } = req.params;
-
+  const { subtaskTitle } = req.body;
+  console.log("ditle is", subtaskTitle);
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such task" });
   }
 
-  const task = await Task.findOneAndUpdate(
-    { _id: id },
-    {
-      ...req.body,
-    }
+  const task = await Task.findOne(
+    { _id: id }
+    // {
+    // ...req.body,
+    // { children: [{ name: "idiont" }] }
+    // }
   );
-
+  const subTask = await task.children;
+  await subTask.push(req.body);
+  console.log(subTask, "after pushing");
+  await task.save((err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+  // await subTask.save();
+  console.log("task saved", subTask);
   if (!task) {
     return res.status(400).json({ error: "No such task" });
   }
 
   res.status(200).json(task);
+};
+
+const updateSubTask = async (req, res) => {
+  const { id: _id, isChecked } = req.body;
+  console.log("checked is = ", isChecked);
+  // console.log("subtask id", req.body);
+  const task = await Task.findOne({ _id: _id });
+  // console.log("task id", task);
+  const subTask = await task.children.id(req.params.id);
+  subTask.completed = isChecked;
+  task.save();
+  console.log("subtask is", subTask);
+
+  if (!task) {
+    return res.status(400).json({ error: "No such task" });
+  }
 };
 
 module.exports = {
@@ -103,4 +131,5 @@ module.exports = {
   createTask,
   deleteTask,
   updateTask,
+  updateSubTask,
 };

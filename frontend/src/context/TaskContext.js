@@ -12,6 +12,10 @@ export const tasksReducer = (state, action) => {
       return {
         tasks: [action.payload, ...state.tasks],
       };
+    case "CREATE_SUBTASK":
+      return {
+        tasks: action.payload,
+      };
     case "DELETE_TASK":
       return {
         tasks: state.tasks.filter((w) => w._id !== action.payload._id),

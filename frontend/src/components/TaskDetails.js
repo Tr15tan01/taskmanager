@@ -1,7 +1,7 @@
 import { useTasksContext } from "../hooks/useTasksContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { AlertDialogBox } from "../hooks/alertDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Card,
@@ -22,11 +22,10 @@ import {
 // import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
-
 // date fns
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { SubTasks } from "./SubTasks";
+import AddSubtask from "./AddSubtask";
 
 const TaskDetails = ({ task }) => {
   const { dispatch } = useTasksContext();
@@ -34,6 +33,17 @@ const TaskDetails = ({ task }) => {
   const toast = useToast();
   const [boxOpen, setBoxOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const fetchTasks = async () => {
+    const response = await fetch("/api/tasks", {
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
+    const json = await response.json();
+
+    if (response.ok) {
+      dispatch({ type: "SET_TASKS", payload: json });
+    }
+  };
 
   const handleDelete = async () => {
     if (!user) {
@@ -59,9 +69,26 @@ const TaskDetails = ({ task }) => {
     }
   };
 
-  const handleAddTask = () => {
-    console.log("task not added yet");
+  console.log("task subtasks", task.children);
+
+  const completedSubtasks = () => {
+    let completedTasksValue = 0;
+    for (var i = 0; i < task.children.length; i++) {
+      if (task.children[i].completed === true) {
+        completedTasksValue += 1;
+        console.log("completedtaskvalue is", completedTasksValue);
+      }
+    }
+    return Math.round((completedTasksValue / task.children.length) * 100);
   };
+
+  useEffect(() => {
+    completedSubtasks();
+  });
+
+  // completedSubtasks();
+  console.log("the completed carlue is", completedSubtasks());
+  console.log("task details rendered");
 
   return (
     <Card w="100%" boxShadow="2xl">
@@ -79,7 +106,7 @@ const TaskDetails = ({ task }) => {
             <SimpleGrid
               columns={2}
               spacing={10}
-              style={{ border: "1px solid gray" }}
+              style={{ background: "lightgray", borderRadius: "6px" }}
             >
               <Box height="90px">
                 <Text pt="2" fontSize="sm">
@@ -89,7 +116,7 @@ const TaskDetails = ({ task }) => {
               <SimpleGrid
                 columns={2}
                 spacing={10}
-                style={{ border: "1px solid gray" }}
+                // style={{ border: "1px solid gray" }}
               >
                 <Center height="90px">
                   <Text pt="2" fontSize="sm">
@@ -97,13 +124,30 @@ const TaskDetails = ({ task }) => {
                   </Text>
                 </Center>
                 <Center height="90px">
-                  <CircularProgress value={40} color="green.400">
-                    <CircularProgressLabel>40%</CircularProgressLabel>
+                  <CircularProgress
+                    value={completedSubtasks()}
+                    color="green.400"
+                  >
+                    <CircularProgressLabel>
+                      {completedSubtasks()}
+                    </CircularProgressLabel>
                   </CircularProgress>
                 </Center>
               </SimpleGrid>
             </SimpleGrid>
           </Box>
+          {/* map throu subtasks */}
+          {task.children &&
+            task.children.map((subTask) => {
+              return (
+                <SubTasks
+                  key={subTask._id}
+                  subTasks={subTask}
+                  id={task._id}
+                  completed={completedSubtasks()}
+                />
+              );
+            })}
 
           <Box>
             <Heading size="sm" textTransform="uppercase">
@@ -118,9 +162,8 @@ const TaskDetails = ({ task }) => {
                 addSuffix: true,
               })}
             </p>
-            <span className="icons" onClick={handleAddTask}>
-              <AddIcon boxSize={6} />
-            </span>
+
+            <AddSubtask task={task} />
 
             <AlertDialogBox onOpen={onOpen} onDelete={handleDelete} />
           </Box>

@@ -22,7 +22,6 @@ const Home = () => {
       const json = await response.json();
 
       if (response.ok) {
-        console.log({ json });
         dispatch({ type: "SET_TASKS", payload: json });
       }
     };
@@ -31,7 +30,7 @@ const Home = () => {
       fetchTasks();
     }
   }, [dispatch, user]);
-
+  // console.log({ tasks }, "from home js");
   return (
     <Container maxW="container.lg">
       <ModalComponent />

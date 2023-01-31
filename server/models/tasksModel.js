@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+const subtaskSchema = new Schema({
+  subtaskTitle: {
+    type: String,
+    required: false,
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+});
+
 const taskSchema = new Schema(
   {
     title: {
@@ -16,6 +28,7 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    children: [subtaskSchema],
   },
   { timestamps: true }
 );
