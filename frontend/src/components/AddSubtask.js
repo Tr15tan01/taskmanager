@@ -18,8 +18,6 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
-  Box,
-  Checkbox,
   Center,
 } from "@chakra-ui/react";
 
@@ -86,8 +84,6 @@ export default function AddSubtask({ task }) {
       setEmptyFields([]);
       fetchTasks();
 
-      // dispatch({ type: "SET_TASKS", payload: json });
-      // dispatch({ type: "CREATE_SUBTASK", payload: json });
       toast({
         title: "SubTask created.",
         description: "A new subtask is createda.",

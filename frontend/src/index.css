@@ -132,11 +132,11 @@ form.login {
 
 .icons {
   padding: 6px 45px;
-  border: 1px solid gray;
+  /* border: 1px solid gray; */
   border-radius: 3px;
   cursor: pointer;
   float: right;
-  color: magenta;
+  color: rgb(218, 48, 48);
 }
 
 .icons:hover {

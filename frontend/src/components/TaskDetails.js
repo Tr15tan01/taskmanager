@@ -34,16 +34,16 @@ const TaskDetails = ({ task }) => {
   // const [boxOpen, setBoxOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const fetchTasks = async () => {
-    const response = await fetch("/api/tasks", {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-    const json = await response.json();
+  // const fetchTasks = async () => {
+  //   const response = await fetch("/api/tasks", {
+  //     headers: { Authorization: `Bearer ${user.token}` },
+  //   });
+  //   const json = await response.json();
 
-    if (response.ok) {
-      dispatch({ type: "SET_TASKS", payload: json });
-    }
-  };
+  //   if (response.ok) {
+  //     dispatch({ type: "SET_TASKS", payload: json });
+  //   }
+  // };
 
   const handleDelete = async () => {
     if (!user) {
@@ -81,18 +81,17 @@ const TaskDetails = ({ task }) => {
     return Math.round((completedTasksValue / task.children.length) * 100);
   };
 
-  // useEffect(() => {
-  //   completedSubtasks();
-  // });
-
-  // completedSubtasks();
-  // console.log("the completed carlue is", completedSubtasks());
-  console.log("task details rendered");
-
   return (
     <Card w="100%" boxShadow="2xl">
       <CardHeader>
-        <Text fontSize="4xl" textTransform="uppercase">
+        <Text
+          fontSize="4xl"
+          css={{
+            "&:first-letter": {
+              textTransform: "uppercase",
+            },
+          }}
+        >
           {task.title}
         </Text>
       </CardHeader>
@@ -103,15 +102,14 @@ const TaskDetails = ({ task }) => {
               Description
             </Heading>
             <SimpleGrid
+              mt="3"
               columns={2}
               spacing={10}
-              style={{ background: "lightgray", borderRadius: "6px" }}
+              style={{ border: " 1px solid lightgray", borderRadius: "6px" }}
             >
-              <Box height="90px">
-                <Text pt="2" fontSize="sm">
-                  {task.description}
-                </Text>
-              </Box>
+              <Center height="90px">
+                <Text fontSize="sm">{task.description}</Text>
+              </Center>
               <SimpleGrid
                 columns={2}
                 spacing={10}

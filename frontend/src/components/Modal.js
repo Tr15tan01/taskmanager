@@ -154,12 +154,7 @@ export default function ModalComponent() {
             </form>
           </ModalBody>
 
-          <ModalFooter>
-            {/* <Button colorScheme="blue" mr={3} type="submit">
-              Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button> */}
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
           {error && <div className="error">{error}</div>}
         </ModalContent>
       </Modal>
