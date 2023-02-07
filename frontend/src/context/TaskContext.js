@@ -14,7 +14,7 @@ export const tasksReducer = (state, action) => {
       };
     case "CREATE_SUBTASK":
       return {
-        tasks: action.payload,
+        tasks: [action.payload, ...state.tasks],
       };
     case "DELETE_TASK":
       return {

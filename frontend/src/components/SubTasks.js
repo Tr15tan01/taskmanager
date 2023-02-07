@@ -10,21 +10,30 @@ export const SubTasks = ({ subTasks, id, completed }) => {
   const [isChecked, setIsChecked] = useState(subTasks.completed);
   const { dispatch } = useTasksContext();
 
-  const fetchTasks = async () => {
-    const response = await fetch("/api/tasks", {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-    const json = await response.json();
-    console.log("tasks fetched");
-    if (response.ok) {
-      dispatch({ type: "SET_TASKS", payload: json });
-    }
-  };
+  // const fetchTasks = async () => {
+  //   await fetch("/api/tasks/" + id + "/subtask/" + subTasks._id, {
+  //     method: "PATCH",
+  //     body: JSON.stringify({ id: id, isChecked: !isChecked }),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${user.token}`,
+  //     },
+  // //   });
+
+  //   const response = await fetch("/api/tasks", {
+  //     headers: { Authorization: `Bearer ${user.token}` },
+  //   });
+  //   const json = await response.json();
+  //   console.log("tasks fetched");
+  //   if (response.ok) {
+  //     dispatch({ type: "SET_TASKS", payload: json });
+  //   }
+  // };
 
   const handleCheck = async (e) => {
     setIsChecked(!isChecked);
     console.log(isChecked, "after setischecked");
-    await fetchTasks();
+    // await fetchTasks();
 
     if (!user) {
       setError("you must be logged in");
@@ -41,6 +50,13 @@ export const SubTasks = ({ subTasks, id, completed }) => {
         },
       }
     );
+
+    console.log("response id herer");
+    const json = await response.json();
+    if (response.ok) {
+      await dispatch({ type: "SET_TASKS", payload: json });
+    }
+    console.log(json, "after checkling 😂");
   };
 
   return (

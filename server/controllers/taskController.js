@@ -80,18 +80,12 @@ const deleteTask = async (req, res) => {
 const updateTask = async (req, res) => {
   const { id } = req.params;
   const { subtaskTitle } = req.body;
-  console.log("ditle is", subtaskTitle);
+  // console.log("ditle is", subtaskTitle);
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such task" });
   }
 
-  const task = await Task.findOne(
-    { _id: id }
-    // {
-    // ...req.body,
-    // { children: [{ name: "idiont" }] }
-    // }
-  );
+  const task = await Task.findOne({ _id: id });
   const subTask = await task.children;
   await subTask.push(req.body);
   console.log(subTask, "after pushing");
@@ -111,18 +105,20 @@ const updateTask = async (req, res) => {
 
 const updateSubTask = async (req, res) => {
   const { id: _id, isChecked } = req.body;
+  const user_id = req.user._id;
   console.log("checked is = ", isChecked);
-  // console.log("subtask id", req.body);
   const task = await Task.findOne({ _id: _id });
-  // console.log("task id", task);
   const subTask = await task.children.id(req.params.id);
   subTask.completed = isChecked;
-  task.save();
+  await task.save();
   console.log("subtask is", subTask);
+  const response = await Task.find({ user_id }).sort({ createdAt: -1 });
+  console.log(response, "is response");
 
   if (!task) {
     return res.status(400).json({ error: "No such task" });
   }
+  res.status(200).json(response);
 };
 
 module.exports = {

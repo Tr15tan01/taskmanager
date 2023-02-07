@@ -1,0 +1,26 @@
+{
+  "name": "taskmanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "npm start --prefix frontend",
+    "server": "npm run dev --prefix server",
+    "dev": "concurrently \"npm run frontend\" \"npm run server\" ",
+    "start": "concurrently 'frontend'  'server' "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tr15tan01/taskmanager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tr15tan01/taskmanager/issues"
+  },
+  "homepage": "https://github.com/Tr15tan01/taskmanager#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

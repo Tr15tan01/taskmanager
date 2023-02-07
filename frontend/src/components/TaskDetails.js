@@ -31,7 +31,7 @@ const TaskDetails = ({ task }) => {
   const { dispatch } = useTasksContext();
   const { user } = useAuthContext();
   const toast = useToast();
-  const [boxOpen, setBoxOpen] = useState(false);
+  // const [boxOpen, setBoxOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const fetchTasks = async () => {
@@ -69,25 +69,24 @@ const TaskDetails = ({ task }) => {
     }
   };
 
-  console.log("task subtasks", task.children);
+  // console.log("task subtasks", task.children);
 
   const completedSubtasks = () => {
     let completedTasksValue = 0;
     for (var i = 0; i < task.children.length; i++) {
       if (task.children[i].completed === true) {
         completedTasksValue += 1;
-        console.log("completedtaskvalue is", completedTasksValue);
       }
     }
     return Math.round((completedTasksValue / task.children.length) * 100);
   };
 
-  useEffect(() => {
-    completedSubtasks();
-  });
+  // useEffect(() => {
+  //   completedSubtasks();
+  // });
 
   // completedSubtasks();
-  console.log("the completed carlue is", completedSubtasks());
+  // console.log("the completed carlue is", completedSubtasks());
   console.log("task details rendered");
 
   return (
